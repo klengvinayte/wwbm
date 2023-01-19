@@ -1,0 +1,22 @@
+body {
+  background-image: url("https://wallpaperaccess.com/full/17520.jpg");
+}
+
+.game-logo {
+  width: 120px;
+}
+
+.game-help-used {
+  opacity: 0.5;
+}
+
+.users-table .label {
+  margin-left: .5em;
+}
+
+.alert-info {
+  background: rgba(255, 255, 255, 0.2);
+  border-width: 2px;
+  border-color: rgba(213, 235, 255, 1);
+  color: white;
+}

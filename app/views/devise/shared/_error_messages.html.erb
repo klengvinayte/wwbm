@@ -1,0 +1,16 @@
+<% if resource.errors.any? %>
+  <div class="alert alert-danger alert-dismissible fade show" id="error_explanation" role="alert">
+    <p class="fw-bold mb-0">
+      <%= I18n.t("errors.messages.not_saved",
+                 count: resource.errors.count,
+                 resource: resource.class.model_name.human)
+      %>
+    </p>
+    <ul class="list-group list-group-flush">
+      <% resource.errors.each do |error| %>
+        <li class="list-group-item list-group-item-danger"><%= error.full_message %></li>
+      <% end %>
+    </ul>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% end %>
