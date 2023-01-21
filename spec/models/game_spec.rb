@@ -74,7 +74,7 @@ RSpec.describe Game, type: :model do
       end
 
       it ":timeout" do
-        game_w_questions.created_at = a.hour.ago
+        game_w_questions.created_at = 1.hour.ago
         game_w_questions.is_failed = true
         expect(game_w_questions.status).to eq(:timeout)
       end
@@ -96,5 +96,50 @@ RSpec.describe Game, type: :model do
     it "correct .previous_level" do
       expect(game_w_questions.previous_level).to eq(-1)
     end
+  end
+
+  context "#answer_current_question!" do
+    it "check right answer" do
+      expect(game_w_questions.answer_current_question!("d")).to eq(true)
+    end
+
+    it "check wrong answer" do
+      expect(game_w_questions.answer_current_question!("b")).to eq(false)
+    end
+
+    it "check last win answer status" do
+      game_w_questions.current_level = Question::QUESTION_LEVELS.max
+      expect(game_w_questions.answer_current_question!("d")).to eq(true)
+    end
+
+    it "check last win answer level" do
+      game_w_questions.current_level = Question::QUESTION_LEVELS.max
+      game_w_questions.answer_current_question!("d")
+      expect(game_w_questions.current_level).to eq(Question::QUESTION_LEVELS.max + 1)
+    end
+
+    it "check answer after timeout" do
+      game_w_questions.created_at = 1.hour.ago
+      expect(game_w_questions.answer_current_question!("b")).to eq(false)
+    end
+  end
+end
+
+def answer_current_question!(letter)
+  return false if time_out! || finished? # законченную игру низя обновлять
+
+  if current_game_question.answer_correct?(letter)
+    if current_level == Question::QUESTION_LEVELS.max
+      self.current_level += 1
+      finish_game!(PRIZES[Question::QUESTION_LEVELS.max], false)
+    else
+      self.current_level += 1
+      save!
+    end
+
+    true
+  else
+    finish_game!(fire_proof_prize(previous_level), true)
+    false
   end
 end
