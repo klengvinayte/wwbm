@@ -1,7 +1,6 @@
 require 'game_help_generator'
 
 class GameQuestion < ApplicationRecord
-
   belongs_to :game
 
   # вопрос из которого берется вся информация
@@ -15,7 +14,7 @@ class GameQuestion < ApplicationRecord
   validates :game, :question, presence: true
 
   # в полях a,b,c,d прячутся индексы ответов из объекта :game
-  validates :a, :b, :c, :d, inclusion: {in: 1..4}
+  validates :a, :b, :c, :d, inclusion: { in: 1..4 }
 
   # Автоматическая сериализация поля в базу (мы юзаем как обычный хэш,
   # а рельсы в базе хранят как строчку)
@@ -29,7 +28,6 @@ class GameQuestion < ApplicationRecord
   #   friend_call: 'Василий Петрович считает, что правильный ответ A'
   # }
   #
-
 
   # ----- Основные методы для доступа к данным в шаблонах и контроллерах -----------
 
@@ -51,7 +49,7 @@ class GameQuestion < ApplicationRecord
 
   # ключ правильного ответа 'a', 'b', 'c', или 'd'
   def correct_answer_key
-    {a => 'a', b => 'b', c => 'c', d => 'd'}[1]
+    { a => 'a', b => 'b', c => 'c', d => 'd' }[1]
   end
 
   # текст правильного ответа

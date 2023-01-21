@@ -21,16 +21,15 @@ class Game < ApplicationRecord
   validates :user, presence: true
 
   # текущий вопрос (его уровень сложности)
-  validates :current_level, numericality: {only_integer: true}, allow_nil: false
+  validates :current_level, numericality: { only_integer: true }, allow_nil: false
 
   # выигрышь игрока - от нуля до максимального приза за игру
   validates :prize,
             presence: true,
-            numericality: {greater_than_or_equal_to: 0, less_than_or_equal_to: PRIZES.last}
+            numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: PRIZES.last }
 
   # Scope - подмножество игр, у которых поле finished_at пустое
   scope :in_progress, -> { where(finished_at: nil) }
-
 
   #---------  Фабрика-генератор новой игры ------------------------------
 
@@ -118,7 +117,6 @@ class Game < ApplicationRecord
     finish_game!((previous_level > -1) ? PRIZES[previous_level] : 0, false)
   end
 
-
   # todo: дорогой ученик!
   # Код метода ниже можно сократиь в 3 раза с помощью возможностей Ruby и Rails,
   # подумайте как и реализуйте. Помните о безопасности и входных данных!
@@ -156,7 +154,6 @@ class Game < ApplicationRecord
 
     false
   end
-
 
   # Результат игры, одно из:
   # :fail - игра проиграна из-за неверного вопроса
