@@ -86,14 +86,13 @@ RSpec.describe Game, type: :model do
   end
 
   describe "#current_game_question" do
-    it "correct .current_game_question" do
-      q = game_w_questions.current_game_question
-      expect(game_w_questions.current_game_question).to eq(q)
+    it "checks correctness .current_game_question" do
+      expect(game_w_questions.current_game_question.level).to eq(0)
     end
   end
 
   describe "#previous_level" do
-    it "correct .previous_level" do
+    it "checks correctness .previous_level" do
       expect(game_w_questions.previous_level).to eq(-1)
     end
   end
@@ -122,24 +121,5 @@ RSpec.describe Game, type: :model do
       game_w_questions.created_at = 1.hour.ago
       expect(game_w_questions.answer_current_question!("b")).to eq(false)
     end
-  end
-end
-
-def answer_current_question!(letter)
-  return false if time_out! || finished? # законченную игру низя обновлять
-
-  if current_game_question.answer_correct?(letter)
-    if current_level == Question::QUESTION_LEVELS.max
-      self.current_level += 1
-      finish_game!(PRIZES[Question::QUESTION_LEVELS.max], false)
-    else
-      self.current_level += 1
-      save!
-    end
-
-    true
-  else
-    finish_game!(fire_proof_prize(previous_level), true)
-    false
   end
 end
