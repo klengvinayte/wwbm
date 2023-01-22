@@ -86,8 +86,8 @@ RSpec.describe Game, type: :model do
   end
 
   describe "#current_game_question" do
-    it "checks correctness .current_game_question" do
-      expect(game_w_questions.current_game_question.level).to eq(0)
+    it "method returns the .current_game_question" do
+      expect(game_w_questions.current_game_question.question.text).to eq("В каком году была космическая одиссея 171?")
     end
   end
 
@@ -100,10 +100,12 @@ RSpec.describe Game, type: :model do
   context "#answer_current_question!" do
     it "check right answer" do
       expect(game_w_questions.answer_current_question!("d")).to eq(true)
+      expect(game_w_questions.status).to eq(:in_progress)
     end
 
     it "check wrong answer" do
       expect(game_w_questions.answer_current_question!("b")).to eq(false)
+      expect(game_w_questions.status).to eq(:fail)
     end
 
     it "check last win answer status" do
