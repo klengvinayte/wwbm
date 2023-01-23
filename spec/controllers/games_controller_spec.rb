@@ -11,44 +11,84 @@ RSpec.describe GamesController, type: :controller do
   let(:game_w_questions) { FactoryBot.create(:game_with_questions, user: user) }
 
   context "anon" do
-    it "kick from #show" do
-      get :show, params: { id: game_w_questions.id }
+    describe "#show" do
+      before do
+        get :show, params: { id: game_w_questions.id }
+      end
 
-      expect(response.status).not_to eq 200
-      expect(response).to redirect_to(new_user_session_path)
-      expect(flash[:alert]).to be
+      it "has response status" do
+        expect(response.status).not_to eq 200
+      end
+      it "redirects to sign in" do
+        expect(response).to redirect_to(new_user_session_path)
+      end
+      it "has alert" do
+        expect(flash[:alert]).to be
+      end
     end
 
-    it "kick from #create" do
-      post :create
+    describe "#create" do
+      before do
+        post :create
+      end
 
-      expect(response.status).not_to eq 200
-      expect(response).to redirect_to(new_user_session_path)
-      expect(flash[:alert]).to be
+      it "has response status" do
+        expect(response.status).not_to eq 200
+      end
+      it "redirects to sign in" do
+        expect(response).to redirect_to(new_user_session_path)
+      end
+      it "has alert" do
+        expect(flash[:alert]).to be
+      end
     end
 
-    it "kick from #answer" do
-      put :answer, params: { id: game_w_questions.id }
+    describe "#answer" do
+      before do
+        put :answer, params: { id: game_w_questions.id }
+      end
 
-      expect(response.status).not_to eq 200
-      expect(response).to redirect_to(new_user_session_path)
-      expect(flash[:alert]).to be
+      it "has response status" do
+        expect(response.status).not_to eq 200
+      end
+      it "redirects to sign in" do
+        expect(response).to redirect_to(new_user_session_path)
+      end
+      it "has alert" do
+        expect(flash[:alert]).to be
+      end
     end
 
-    it "kick from #take_money" do
-      put :take_money, params: { id: game_w_questions.id }
+    describe "#take_money" do
+      before do
+        put :take_money, params: { id: game_w_questions.id }
+      end
 
-      expect(response.status).not_to eq 200
-      expect(response).to redirect_to(new_user_session_path)
-      expect(flash[:alert]).to be
+      it "has response status" do
+        expect(response.status).to eq 302
+      end
+      it "redirects to sign in" do
+        expect(response).to redirect_to(new_user_session_path)
+      end
+      it "has alert" do
+        expect(flash[:alert]).to be
+      end
     end
 
-    it "kick from #help" do
-      put :help, params: { id: game_w_questions.id }
+    describe "#help" do
+      before do
+        put :help, params: { id: game_w_questions.id }
+      end
 
-      expect(response.status).not_to eq 200
-      expect(response).to redirect_to(new_user_session_path)
-      expect(flash[:alert]).to be
+      it "has response status" do
+        expect(response.status).to eq 302
+      end
+      it "redirects to sign in" do
+        expect(response).to redirect_to(new_user_session_path)
+      end
+      it "has alert" do
+        expect(flash[:alert]).to be
+      end
     end
   end
 
@@ -81,27 +121,61 @@ RSpec.describe GamesController, type: :controller do
       expect(response).to render_template("show")
     end
 
-    it "answer correct" do
-      put :answer, params: { id: game_w_questions.id, letter: game_w_questions.current_game_question.correct_answer_key }
+    describe "#answer" do
 
-      game = assigns(:game)
+      context "answer correct" do
+        before do
+          put :answer, params: { id: game_w_questions.id, letter: game_w_questions.current_game_question.correct_answer_key }
+        end
 
-      expect(game.finished?).to be_falsey
-      expect(game.current_level).to be > 0
-      expect(response).to redirect_to game_path(game)
-      expect(flash.empty?).to be_truthy
-    end
+        it "continues the game" do
+          game = assigns(:game)
+          expect(game.finished?).to be_falsey
+        end
 
-    it "answer incorrect" do
-      put :answer, params: { id: game_w_questions.id, letter: "a" }
+        it "changes current level" do
+          game = assigns(:game)
+          expect(game.current_level).to be > 0
+        end
 
-      game = assigns(:game)
+        it "redirect to current game" do
+          game = assigns(:game)
+          expect(response).to redirect_to game_path(game)
+        end
 
-      expect(game.finished?).to be_truthy
-      expect(game.current_level).to be 0
-      expect(response).to redirect_to(user_path(user))
-      expect(flash[:alert]).to be
-      expect(game.prize).to be 0
+        it "has no notification" do
+          expect(flash.empty?).to be_truthy
+        end
+      end
+
+      context "answer incorrect" do
+        before do
+          put :answer, params: { id: game_w_questions.id, letter: "a" }
+        end
+
+        it "not continues the game" do
+          game = assigns(:game)
+          expect(game.finished?).to be_truthy
+        end
+
+        it "not changes current level" do
+          game = assigns(:game)
+          expect(game.current_level).to be 0
+        end
+
+        it "redirect to current user" do
+          expect(response).to redirect_to(user_path(user))
+        end
+
+        it "has alert notification" do
+          expect(flash[:alert]).to be
+        end
+
+        it "has no prize" do
+          game = assigns(:game)
+          expect(game.prize).to be 0
+        end
+      end
     end
 
     it "dont show another game" do
