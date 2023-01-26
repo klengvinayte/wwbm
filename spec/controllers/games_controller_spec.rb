@@ -28,14 +28,14 @@ RSpec.describe GamesController, type: :controller do
     end
 
     context "Usual user" do
-      before(:each) do
+      before do
         sign_in user
         get :show, params: { id: game_w_questions.id }
       end
 
       it "continues the game" do
         game = assigns(:game)
-        expect(game.finished?).to be_falsey
+        expect(game.finished?).to be false
       end
 
       it "has user" do
@@ -62,52 +62,53 @@ RSpec.describe GamesController, type: :controller do
       it "has response status" do
         expect(response.status).not_to eq 200
       end
+
       it "redirects to sign in" do
         expect(response).to redirect_to(new_user_session_path)
       end
+
       it "has alert" do
         expect(flash[:alert]).to be
       end
     end
 
     context "Usual user" do
-
-      before(:each) do
+      before do
         sign_in user
-
         generate_questions(60)
-        post :create
       end
 
-      it "continues the game" do
-
-        game = assigns(:game)
-
-        expect(game.finished?).to be_falsey
-      end
-
-      it "has user" do
-        game = assigns(:game)
-        expect(game.user).to eq(user)
-      end
-
-      it "redirects to game" do
-        game = assigns(:game)
-        expect(response).to redirect_to game_path(game)
-      end
-
-      it "has notice" do
-        game = assigns(:game)
-        expect(flash[:notice]).to be
-      end
-
-      context "Usual user is trying to create a second game" do
-        before(:each) do
+      context "first game" do
+        before do
           post :create
         end
 
+        it "continues the game" do
+          game = assigns(:game)
+          expect(game.finished?).to be false
+        end
+
+        it "has user" do
+          game = assigns(:game)
+          expect(game.user).to eq(user)
+        end
+
+        it "redirects to game" do
+          game = assigns(:game)
+          expect(response).to redirect_to game_path(game)
+        end
+
+        it "has notice" do
+          game = assigns(:game)
+          expect(flash[:notice]).to be
+        end
+      end
+
+      context "Usual user is trying to create a second game" do
+        let!(:existing_game) { game_w_questions }
+
         it "continues current game" do
-          expect(game_w_questions.finished?).to be_falsey
+          expect(game_w_questions.finished?).to be false
         end
 
         it "does not create new records" do
@@ -115,15 +116,18 @@ RSpec.describe GamesController, type: :controller do
         end
 
         it "does not create a new game" do
+          post :create
           game = assigns(:game)
           expect(game).to be nil
         end
 
         it "redirects to current game" do
-          expect(response).to redirect_to(game_path(game_w_questions))
+          post :create
+          expect(response).to redirect_to(game_path(existing_game))
         end
 
         it "has alert flash" do
+          post :create
           expect(flash[:alert]).to be
         end
       end
@@ -152,14 +156,14 @@ RSpec.describe GamesController, type: :controller do
     context "Usual user" do
 
       context "answer correct" do
-        before (:each) do
+        before do
           sign_in user
           put :answer, params: { id: game_w_questions.id, letter: game_w_questions.current_game_question.correct_answer_key }
         end
 
         it "continues the game" do
           game = assigns(:game)
-          expect(game.finished?).to be_falsey
+          expect(game.finished?).to be false
         end
 
         it "changes current level" do
@@ -178,14 +182,14 @@ RSpec.describe GamesController, type: :controller do
       end
 
       context "answer incorrect" do
-        before(:each) do
+        before do
           sign_in user
           put :answer, params: { id: game_w_questions.id, letter: "a" }
         end
 
         it "not continues the game" do
           game = assigns(:game)
-          expect(game.finished?).to be_truthy
+          expect(game.finished?).to be true
         end
 
         it "not changes current level" do
@@ -211,16 +215,18 @@ RSpec.describe GamesController, type: :controller do
 
   describe "#take_money" do
     context "anon" do
-      before(:each) do
+      before do
         put :take_money, params: { id: game_w_questions.id }
       end
 
       it "has response status" do
         expect(response.status).to eq 302
       end
+      
       it "redirects to sign in" do
         expect(response).to redirect_to(new_user_session_path)
       end
+
       it "has alert" do
         expect(flash[:alert]).to be
       end
@@ -229,7 +235,7 @@ RSpec.describe GamesController, type: :controller do
 
   describe "#help" do
     context "anon" do
-      before(:each) do
+      before do
         put :help, params: { id: game_w_questions.id }
       end
 
@@ -249,7 +255,7 @@ RSpec.describe GamesController, type: :controller do
 
   describe "dont show another game" do
     context "Usual user" do
-      before(:each) do
+      before do
         sign_in user
         alien_game = FactoryBot.create(:game_with_questions)
         get :show, params: { id: alien_game.id }
@@ -271,7 +277,7 @@ RSpec.describe GamesController, type: :controller do
 
   describe "take money before finish game" do
     context "Usual user" do
-      before(:each) do
+      before do
         sign_in user
         game_w_questions.update_attribute(:current_level, 2)
 
@@ -280,7 +286,7 @@ RSpec.describe GamesController, type: :controller do
 
       it "not continues the game" do
         game = assigns(:game)
-        expect(game.finished?).to be_truthy
+        expect(game.finished?).to be true
       end
 
       it "has a prize" do
@@ -307,7 +313,7 @@ RSpec.describe GamesController, type: :controller do
 
   describe "#use_help" do
     context "uses audience_help" do
-      before(:each) do
+      before do
         sign_in user
       end
 
@@ -316,21 +322,21 @@ RSpec.describe GamesController, type: :controller do
       end
 
       it "has a false field" do
-        expect(game_w_questions.audience_help_used).to be_falsey
+        expect(game_w_questions.audience_help_used).to be false
       end
 
       it "continues the game" do
         put :help, params: { id: game_w_questions.id, help_type: :audience_help }
         game = assigns(:game)
 
-        expect(game.finished?).to be_falsey
+        expect(game.finished?).to be false
       end
 
       it "has a true field" do
         put :help, params: { id: game_w_questions.id, help_type: :audience_help }
         game = assigns(:game)
 
-        expect(game.audience_help_used).to be_truthy
+        expect(game.audience_help_used).to be true
       end
 
       it "has a non-empty hash" do
