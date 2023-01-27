@@ -4,11 +4,11 @@ require 'support/my_spec_helper'
 
 RSpec.describe GamesController, type: :controller do
   # обычный пользователь
-  let(:user) { FactoryBot.create(:user) }
+  let(:user) { create(:user) }
   # админ
-  let(:admin) { FactoryBot.create(:user, is_admin: true) }
+  let(:admin) { create(:user, is_admin: true) }
   # игра с прописанными игровыми вопросами
-  let(:game_w_questions) { FactoryBot.create(:game_with_questions, user: user) }
+  let(:game_w_questions) { create(:game_with_questions, user: user) }
 
   describe "#show" do
     context "anon" do
