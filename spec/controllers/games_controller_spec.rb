@@ -222,7 +222,7 @@ RSpec.describe GamesController, type: :controller do
       it "has response status" do
         expect(response.status).to eq 302
       end
-      
+
       it "redirects to sign in" do
         expect(response).to redirect_to(new_user_session_path)
       end
@@ -355,6 +355,55 @@ RSpec.describe GamesController, type: :controller do
 
       it "redirects to current game page" do
         put :help, params: { id: game_w_questions.id, help_type: :audience_help }
+        game = assigns(:game)
+
+        expect(response).to redirect_to(game_path(game))
+      end
+    end
+
+    context "fifty_fifty" do
+      before do
+        sign_in user
+      end
+
+      it "has an empty hash" do
+        expect(game_w_questions.current_game_question.help_hash[:fifty_fifty]).not_to be
+      end
+
+      it "has a false field" do
+        expect(game_w_questions.audience_help_used).to be false
+      end
+
+      it "continues the game" do
+        put :help, params: { id: game_w_questions.id, help_type: :fifty_fifty }
+        game = assigns(:game)
+
+        expect(game.finished?).to be false
+      end
+
+      it "has a true field" do
+        put :help, params: { id: game_w_questions.id, help_type: :fifty_fifty }
+        game = assigns(:game)
+
+        expect(game.fifty_fifty_used).to be true
+      end
+
+      it "has a non-empty hash" do
+        put :help, params: { id: game_w_questions.id, help_type: :fifty_fifty }
+        game = assigns(:game)
+
+        expect(game.current_game_question.help_hash[:fifty_fifty]).to be
+      end
+
+      it "checks keys" do
+        put :help, params: { id: game_w_questions.id, help_type: :fifty_fifty }
+        game = assigns(:game)
+
+        expect(game.current_game_question.help_hash[:fifty_fifty]).to include(  'd')
+      end
+
+      it "redirects to current game page" do
+        put :help, params: { id: game_w_questions.id, help_type: :fifty_fifty }
         game = assigns(:game)
 
         expect(response).to redirect_to(game_path(game))
