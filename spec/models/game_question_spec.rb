@@ -79,6 +79,15 @@ RSpec.describe GameQuestion, type: :model do
         expect(game_question.help_hash).not_to include(:friend_call)
       end
 
+      it "checks that the field is not empty after take help" do
+        game_question.add_friend_call
+
+        expect(game_question.help_hash).to include(:friend_call)
+      end
+      it "checks that the correct option should remain" do
+        game_question.add_friend_call
+        expect(game_question.help_hash[:friend_call]).to include("B")
+      end
     end
   end
 
@@ -99,5 +108,3 @@ RSpec.describe GameQuestion, type: :model do
     end
   end
 end
-
-
