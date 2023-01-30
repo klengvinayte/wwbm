@@ -3,8 +3,7 @@ require 'rails_helper'
 RSpec.describe 'users/show', type: :view do
   let(:user) { create(:user, name: 'Kris') }
 
-  context "user views not own profile" do
-
+  context "user views own profile" do
     before do
       sign_in user
       assign(:games, [stub_template("users/_game.html.erb" => "game template")])
