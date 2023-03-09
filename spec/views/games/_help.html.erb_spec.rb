@@ -1,11 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe 'games/help', type: :view do
-  # Перед началом теста подготовим объекты
   let(:game) { build_stubbed(:game) }
-  let(:help_hash) { {friend_call: 'Сережа считает, что это вариант D'} }
+  let(:help_hash) { {friend_call: 'Jane believes that this is an option D'} }
 
-  # Проверяем, что выводятся кнопки подсказок
   it 'renders help variant' do
     render_partial({}, game)
 
@@ -14,14 +12,13 @@ RSpec.describe 'games/help', type: :view do
     expect(rendered).to match 'users'
   end
 
-  # Проверяем, что выводится текст подсказки «Звонок другу»
   it 'renders help info text' do
     render_partial(help_hash, game)
 
-    expect(rendered).to match 'Сережа считает, что это вариант D'
+    expect(rendered).to match 'Jane believes that this is an option D'
   end
 
-  # Проверяем, что если была использована подсказка 50/50, то такая кнопка не выводится
+  # Check that if the 50/50 hint was used, then such a button is not displayed
   it 'does not render used help variant' do
     game.fifty_fifty_used = true
 
@@ -32,7 +29,7 @@ RSpec.describe 'games/help', type: :view do
 
   private
 
-  # Метод, который рендерит фрагмент с нужными объектами
+  # A method that renders a fragment with the desired objects
   def render_partial(help_hash, game)
     render partial: 'games/help', object: help_hash, locals: {game: game}
   end

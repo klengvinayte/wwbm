@@ -1,5 +1,5 @@
 FactoryBot.define do
-  # Название фабрики (user)
+  # # Factory name (user)
   factory :user do
     name { "Player#{rand(999)}" }
     sequence(:email) { |n| "someguy_#{n}@example.com" }

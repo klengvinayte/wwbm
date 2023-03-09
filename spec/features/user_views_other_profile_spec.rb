@@ -30,20 +30,20 @@ RSpec.feature "USER views another profile", type: :feature do
 
     expect(page).to have_content(game_user.name)
 
-    expect(page).to have_content("28 янв., 14:39")
-    expect(page).to have_content("30 янв., 08:01")
+    expect(page).to have_content("28 Jan 14:39")
+    expect(page).to have_content("30 Jan 08:01")
 
-    expect(page).to have_content("победа")
-    expect(page).to have_content("проигрыш")
+    expect(page).to have_content("victory")
+    expect(page).to have_content("loss")
 
-    expect(page).to have_content("1 000 000 ₽")
-    expect(page).to have_content("1 000 ₽")
+    expect(page).to have_content("€1,000,000")
+    expect(page).to have_content("€1,000")
 
     expect(page).to have_content("50/50 phone users")
 
     expect(page).to have_content("15")
     expect(page).to have_content("6")
 
-    expect(page).not_to have_content("Сменить имя и пароль")
+    expect(page).not_to have_content("Change your username and password")
   end
 end

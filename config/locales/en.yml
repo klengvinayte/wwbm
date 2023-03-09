@@ -37,4 +37,21 @@ en:
         # The format of the currency display and the designation of the currency itself
         unit: "€"
         precision: 0
-        
+  devise:
+    registrations:
+      edit:
+        editing: "Edit "
+        save: "Save"
+        back: "Back"
+        delete_user: "Delete Account"
+        note1: "(leave it blank if you don't want to change it)"
+        note2: " characters minimum"
+        note3: "(we need your current password to confirm the changes)"
+        note4: "We all understand, sometimes you just need to leave"
+      new:
+        sign_up: "Sign up"
+        registration: "Registration"
+        note1: " characters minimum"
+    sessions:
+      new:
+        sign_in: "Sign in"

@@ -21,14 +21,14 @@ RSpec.describe 'users/show', type: :view do
     end
 
     it "renders password changing link" do
-      expect(rendered).to match(link_to 'Сменить имя и пароль', edit_user_registration_path(user))
+      expect(rendered).to match(link_to 'Change your username and password', edit_user_registration_path(user))
     end
   end
 
   context "user views not own profile" do
     it 'does not render password changing link' do
       assign(:user, user)
-      expect(rendered).not_to match(link_to 'Сменить имя и пароль', edit_user_registration_path(user))
+      expect(rendered).not_to match(link_to 'Change your username and password', edit_user_registration_path(user))
     end
   end
 end

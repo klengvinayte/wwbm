@@ -86,7 +86,7 @@ RSpec.describe GameQuestion, type: :model do
       end
       it "checks that the correct option should remain" do
         game_question.add_friend_call
-        expect(game_question.help_hash[:friend_call]).to include("что это вариант")
+        expect(game_question.help_hash[:friend_call]).to include("thinks this is an option")
       end
     end
   end

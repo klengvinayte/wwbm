@@ -1,15 +1,15 @@
 FactoryBot.define do
-  # Название фабрики (question)
+  # Factory name (question)
   factory :question do
-    # Генерируем последовательность уникальных текстов вопроса
-    # Параметр n гарантирует уникальность вопроса
-    sequence(:text) { |n| "В каком году была космическая одиссея #{n}?" }
+    # Generating a sequence of unique question texts
+    # Parameter n guarantees the uniqueness of the question
+    sequence(:text) { |n| "What year was the space odyssey #{n}?" }
 
-    # Уровни генерируем от 0 до 14
+    # We generate levels from 0 to 14
     sequence(:level) { |n| n % 15 }
 
-    # Значения полей ответа
-    # Ответы сделаем рандомными для красоты
+    # Values of response fields
+    # We will make the answers random for beauty
     answer1 { "#{rand(2001)}" }
     answer2 { "#{rand(2001)}" }
     answer3 { "#{rand(2001)}" }

@@ -1,9 +1,9 @@
 FactoryBot.define do
   factory :game do
-    # Связь с юзером
+    # Communication with the user
     association :user
 
-    # Игра только начата, создаем объект с нужными полями
+    # The game has just started, creating an object with the necessary fields
     finished_at { nil }
     current_level { 0 }
     is_failed { false }

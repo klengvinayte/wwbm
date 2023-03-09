@@ -16,8 +16,8 @@ RSpec.describe 'users/index', type: :view do
   end
 
   it 'renders player balances' do
-    expect(rendered).to match '5 000 ₽'
-    expect(rendered).to match '3 000 ₽'
+    expect(rendered).to match '€5,000'
+    expect(rendered).to match '€3,000'
   end
 
   it 'renders player names in right order' do
