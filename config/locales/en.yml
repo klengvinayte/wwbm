@@ -1,33 +1,40 @@
-# Files in the config/locales directory are used for internationalization
-# and are automatically loaded by Rails. If you want to use locales other
-# than English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# The following keys must be escaped otherwise they will not be retrieved by
-# the default I18n backend:
-#
-# true, false, on, off, yes, no
-#
-# Instead, surround them with single quotes.
-#
-# en:
-#   "true": "foo"
-#
-# To learn more, please read the Rails Internationalization guide
-# available at https://guides.rubyonrails.org/i18n.html.
-
 en:
-  hello: "Hello world"
+  game_help:
+    friends:
+      - "Harry Potter"
+      - "Doctor Strange"
+      - "Hulk"
+      - "Sherlock Holmes"
+      - "Robin Hood"
+      - "Rocky Balboa"
+      - "Forrest Gump"
+    friend_call: "%{name} thinks this is an option %{variant}"
+
+  controllers:
+    games:
+      not_your_game: "This is not your game!"
+      game_created: "The game started in %{created_at}, the countdown has begun"
+      game_not_created: "Failed to create a game :( Contact the admin"
+      help_used: "You used a hint"
+      help_not_used: "The hint has already been used!"
+      game_not_finished: "You haven't finished the game yet"
+      game_finished: "The game is over, your winnings %{prize}. Come again!"
+      game_closed: "The game %{game_id} is over and no longer available, start a new one!"
+      good_answer: "Correct answer, well done :)"
+      bad_answer: "Correct answer: %{answer}. ИThe game is over, your prize %{prize}"
+
+  # game statuses
+  game_statuses:
+    fail: 'loss'
+    timeout: 'timeout'
+    money: 'money'
+    won: 'victory'
+    in_progress: 'in progress'
+
+  number:
+    currency:
+      format:
+        # The format of the currency display and the designation of the currency itself
+        unit: "€"
+        precision: 0
+        

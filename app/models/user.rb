@@ -6,24 +6,23 @@ class User < ApplicationRecord
 
   before_validation :set_name, on: :create
 
-  # имя не пустое, email валидирует Devise
+  # the name is not empty, the email validates the Device
   validates :name, presence: true
 
-  # поле только булевское (лож/истина) - недопустимо nil
+  # the field is Boolean only (false/true)
   validates :is_admin, inclusion: { in: [true, false] }, allow_nil: false
 
-  # это поле должно быть только целым числом, значение nil - недопустимо
+  # this field should only be an integer
   validates :balance, numericality: { only_integer: true }, allow_nil: false
 
-  # у юзера много игр, они удалятся из базы вместе с ним
   has_many :games, dependent: :destroy
 
-  # расчет среднего выигрыша по всем играм юзера
+  # calculation of average winnings for all user games
   def average_prize
     (balance.to_f / games.count).round unless games.count.zero?
   end
 
   def set_name
-    self.name = "Игрок №#{rand(777)}" if self.name.blank?
+    self.name = "Player №#{rand(777)}" if self.name.blank?
   end
 end

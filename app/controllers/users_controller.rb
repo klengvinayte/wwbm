@@ -1,16 +1,13 @@
-# (c) goodprogrammer.ru
-#
-# Контроллер, отображающий список и профиль юзера
 class UsersController < ApplicationController
   before_action :set_user, only: [:show]
 
   def index
-    # Для страницы рейтинга нам понадобятся все пользователи, остортированные по выигрышу
+    # For the rating page, we will need all users sorted by winnings
     @users = User.all.order(balance: :desc)
   end
 
   def show
-    # Для профиля пользователя нам понадобятся всего игры в порядке давности
+    # For the user profile, we will need all the games in the order of prescription
     @games = @user.games.order(created_at: :desc)
   end
 

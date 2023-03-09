@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.permit(:account_update) { |u| u.permit(:name, :password, :password_confirmation, :current_password) }
   end
 
-  # Болванка новой игры для кнопки "Начать игру", доступной на любой странице сайта
+  # The form of a new game for the "Start game" button, available on any page of the site
   def set_new_game
     @new_game ||= Game.new
   end

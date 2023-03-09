@@ -1,4 +1,4 @@
-<%# Шаблон, который выводит информацию о конкретной игре для профиля пользователя %>
+<%# A template that displays information about a specific game for a user profile %>
 <tr class="text-center">
   <td><%= game.id %></td>
   <td><%= game_label(game) %></td>
@@ -6,14 +6,8 @@
   <td><%= game.current_level %></td>
   <td><%= number_to_currency game.prize %></td>
   <td>
-    <%= content_tag :span, '50/50',
-      class: "label label-primary #{'game-help-used' if game.fifty_fifty_used?}"
-    %>
-    <%= content_tag :span, 'phone',
-      class: "label label-primary #{'game-help-used' if game.friend_call_used?}"
-    %>
-    <%= content_tag :span, 'users',
-      class: "label label-primary #{'game-help-used' if game.audience_help_used?}"
-    %>
+    <%= content_tag :span, '50/50', class: "label label-primary #{'game-help-used' if game.fifty_fifty_used?}" %>
+    <%= content_tag :span, 'phone', class: "label label-primary #{'game-help-used' if game.friend_call_used?}" %>
+    <%= content_tag :span, 'users', class: "label label-primary #{'game-help-used' if game.audience_help_used?}" %>
   </td>
 </tr>

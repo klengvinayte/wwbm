@@ -1,45 +1,45 @@
 class Game < ApplicationRecord
 
-  # денежный приз за каждый вопрос
+  # cash prize for each question
   PRIZES = [
     100, 200, 300, 500, 1000,
     2000, 4000, 8000, 16000, 32000,
     64000, 125000, 250000, 500000, 1000000
   ].freeze
 
-  # номера несгораемых уровней
+  # numbers of fireproof levels
   FIREPROOF_LEVELS = [4, 9, 14].freeze
 
-  # время на одну игру
+  # time for one game
   TIME_LIMIT = 35.minutes
 
   belongs_to :user
 
-  # массив игровых вопросов для этой игры
+  # array of game questions for this game
   has_many :game_questions, dependent: :destroy
 
   validates :user, presence: true
 
-  # текущий вопрос (его уровень сложности)
+  # current question (its difficulty level)
   validates :current_level, numericality: { only_integer: true }, allow_nil: false
 
-  # выигрышь игрока - от нуля до максимального приза за игру
+  # # the player's winnings are from zero to the maximum prize per game
   validates :prize,
             presence: true,
             numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: PRIZES.last }
 
-  # Scope - подмножество игр, у которых поле finished_at пустое
+  # Scope - subset of games where the finished_at field is empty
   scope :in_progress, -> { where(finished_at: nil) }
 
-  #---------  Фабрика-генератор новой игры ------------------------------
+  #---------  Factory-generator of a new game ------------------------------
 
   # returns correct new game or dies with exceptions
   def self.create_game_for_user!(user)
-    # внутри единой транзакции
+    # inside a single transaction
     transaction do
       game = create!(user: user)
 
-      # созданной игре добавляем ровно 15 новых игровых вопросов, выбирая случайный Question из базы
+      # we add exactly 15 new game questions to the created game by choosing a random Question from the database
       Question::QUESTION_LEVELS.each do |i|
         q = Question.where(level: i).order('RANDOM()').first
         ans = [1, 2, 3, 4]
@@ -49,30 +49,30 @@ class Game < ApplicationRecord
     end
   end
 
-  #---------  Основные методы доступа к состоянию игры ------------------
+  #---------  The main methods of accessing the state of the game ------------------
 
-  # последний отвеченный вопрос игры, *nil* для новой игры!
+  #the last answered question of the game, *nil* for a new game!
   def previous_game_question
-    # с помощью ruby метода detect находим в массиве game_questions нужный вопрос
+    # using the ruby detect method, we find the necessary question in the game_questions array
     game_questions.detect { |q| q.question.level == previous_level }
   end
 
-  # текущий, еще неотвеченный вопрос игры
+  # the current, still unanswered question of the game
   def current_game_question
     game_questions.detect { |q| q.question.level == current_level }
   end
 
-  # -1 для новой игры!
+  # -1 for a new game!
   def previous_level
     current_level - 1
   end
 
-  # Игра закончена, если прописано поле :finished_at - время конца игры
+  # The game is over if the field is specified :finished_at - end time of the game
   def finished?
     finished_at.present?
   end
 
-  # проверяет текущее время и грохает игру + возвращает true если время прошло
+  # checks the current time and crashes the game + returns true if the time has passed
   def time_out!
     if (Time.now - created_at) > TIME_LIMIT
       finish_game!(fire_proof_prize(previous_level), true)
@@ -80,20 +80,20 @@ class Game < ApplicationRecord
     end
   end
 
-  #---------  Основные игровые методы ------------------------------------
+  #---------  Basic game methods------------------------------------
 
-  # возвращает true — если ответ верный,
-  # текущая игра при этом обновляет свое состояние:
-  #   меняется :current_level, :prize (если несгораемый уровень), поля :updated_at
-  #   прописывается :finished_at если это был последний вопрос
+  # returns true — if the answer is correct,
+  # the current game updates its state at the same time:
+  #   changes :current_level, :prize (if the level is fireproof), fields :updated_at
+  #   prescribed :finished_at if it was the last question
   #
-  # возвращает false — если 1) ответ неверный 2) время вышло 3) игра уже закончена ранее
-  #   в любом случае прописывается :finished_at, :prize (если несгораемый уровень), :updated_at
-  # После вызова этого метода обновлится .status игры
+  # returns false — if 1) the answer is incorrect 2) time is up 3) the game is already over earlier
+  # in any case, it is prescribed :finished_at, :prize (if the level is fireproof), :updated_at
+  # After calling this method, the game status will be updated
   #
   # letter = 'a','b','c' или 'd'
   def answer_current_question!(letter)
-    return false if time_out! || finished? # законченную игру низя обновлять
+    return false if time_out! || finished? # a finished game cannot be updated
 
     if current_game_question.answer_correct?(letter)
       if current_level == Question::QUESTION_LEVELS.max
@@ -111,30 +111,19 @@ class Game < ApplicationRecord
     end
   end
 
-  # Записываем юзеру игровую сумму на счет и завершаем игру,
+  # We write the game amount to the user's account and end the game,
   def take_money!
-    return if time_out! || finished? # из законченной или неначатой игры нечего брать
+    return if time_out! || finished? # there is nothing to take from a finished or unpacked game
     finish_game!((previous_level > -1) ? PRIZES[previous_level] : 0, false)
   end
 
-  # todo: дорогой ученик!
-  # Код метода ниже можно сократиь в 3 раза с помощью возможностей Ruby и Rails,
-  # подумайте как и реализуйте. Помните о безопасности и входных данных!
-  #
-  # Вариант решения вы найдете в комментарии в конце файла, отвечающего за настройки
-  # хранения сессий вашего приложения. Вот такой вот вам ребус :)
-
-  # Создает варианты подсказок для текущего игрового вопроса.
-  # Возвращает true, если подсказка применилась успешно,
-  # false если подсказка уже заюзана.
-
- # help_type = :fifty_fifty | :audience_help | :friend_call
+  # help_type = :fifty_fifty | :audience_help | :friend_call
 
   def use_help(help_type)
     case help_type
     when :fifty_fifty
       unless fifty_fifty_used
-        # ActiveRecord метод toggle! переключает булевое поле сразу в базе
+        # ActiveRecord метод toggle! switches the boolean field immediately in the database
         toggle!(:fifty_fifty_used)
         current_game_question.add_fifty_fifty
         return true
@@ -156,33 +145,16 @@ class Game < ApplicationRecord
     false
   end
 
-  # def use_help(help_type)
-  #     help_types = %i(fifty_fifty audience_help friend_call)
-  #     help_type = help_type.to_sym
-  #     raise ArgumentError.new('wrong help_type') unless help_types.include?(help_type)
-  #
-  #     unless self["#{help_type}_used"]
-  #       self["#{help_type}_used"] = true
-  #       current_game_question.apply_help!(help_type)
-  #       save
-  #     end
-  #      # false не нужен — unless вернёт nil, если не будет исполнен
-  #   end
-
-  # Результат игры, одно из:
-  # :fail - игра проиграна из-за неверного вопроса
-  # :timeout - игра проиграна из-за таймаута
-  # :won - игра выиграна (все 15 вопросов покорены)
-  # :money - игра завершена, игрок забрал деньги
-  # :in_progress - игра еще идет
+  # The result of the game, one of:
+  # :fail - the game is lost due to an incorrect question
+  # :timeout - the game is lost due to timeout
+  # :won - the game is won (all 15 questions are conquered)
+  # :money - the game is over, the player has taken the money
+  # :in_progress - the game is still on
   def status
     return :in_progress unless finished?
 
     if is_failed
-      # todo: дорогой ученик!
-      # Если TIME_LIMIT в будущем изменится, статусы старых, уже сыгранных игр
-      # могут измениться. Подумайте как это пофиксить!
-      # Ответ найдете в файле настроек вашего тестового окружения
       if (finished_at - created_at) <= TIME_LIMIT
         :fail
       else
@@ -199,12 +171,12 @@ class Game < ApplicationRecord
 
   private
 
-  # Метод завершатель игры
-  # Обновляет все нужные поля и начисляет юзеру выигрыш
+  # Game finalizer method
+  # Updates all the necessary fields and charges the user a win
   def finish_game!(amount = 0, failed = true)
 
-    # оборачиваем в транзакцию - игра заканчивается
-    # и баланс юзера пополняется только вместе
+    # wrap in a transaction - the game ends
+    # and the user's balance is replenished only together
     transaction do
       self.prize = amount
       self.finished_at = Time.now
@@ -215,11 +187,10 @@ class Game < ApplicationRecord
     end
   end
 
-  # По заданному уровню вопроса вычисляем вознаграждение за ближайшую несгораемую сумму
+  #According to the given level of the question, we calculate the reward for the nearest fireproof amount
   # noinspection RubyArgCount
   def fire_proof_prize(answered_level)
     lvl = FIREPROOF_LEVELS.select { |x| x <= answered_level }.last
     lvl.present? ? PRIZES[lvl] : 0
   end
-
 end

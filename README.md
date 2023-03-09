@@ -1,24 +1,29 @@
-# README
+# Who Wants to Be a Millionaire (WWBM)
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+The famous TV game Who Wants to Be a Millionaire? on Ruby on Rails from the [Goodprogrammer](https://goodprogrammer.ru/rails) course.
 
-Things you may want to cover:
 
-* Ruby version
 
-* System dependencies
+The application was created on Ruby 3.1.2 and Ruby on Rails 7.0.4
 
-* Configuration
+### Required to run the application
 
-* Database creation
+`Ruby` installed. `SQLite3` is used for data storage in development.
+`
 
-* Database initialization
+Next, you need to run the following commands:
 
-* How to run the test suite
+```
+$ bundle
+$ bundle exec rake db:create
+$ bundle exec rake db:migrate
+$ bundle exec rake db:seed
+```
 
-* Services (job queues, cache servers, search engines, etc.)
+Run app:
 
-* Deployment instructions
+```
+$ rails s
+```
 
-* ...
+And visit `http://localhost:3000`.

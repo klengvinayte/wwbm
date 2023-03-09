@@ -1,30 +1,30 @@
 <div class="row">
   <div class="col-sm-9 col-sm-push-3">
     <div class="text-center my-xl-5">
-      <%= image_tag asset_path('logo.png'), class: 'game-logo' %>
+      <%= image_tag asset_path("logo.png"), class: "game-logo" %>
     </div>
 
     <div class="game-question">
-      <%# Выводим шаблон с текстом вопроса и вариантами ответа %>
-      <%= render partial: 'game_question', object: @game_question %>
+      <%# We output a template with the text of the question and answer options %>
+      <%= render partial: "game_question", object: @game_question %>
     </div>
 
     <div class="buffer-top-lg">
-      <%# Выводим шаблон с кнопками для подсказок и информацией о подсказках %>
-      <%= render partial: 'help', object: @game_question.help_hash, locals: {game: @game} %>
+      <%# We output a template with buttons for hints and information about hints %>
+      <%= render partial: "help", object: @game_question.help_hash, locals: { game: @game } %>
     </div>
   </div>
 
   <div class="col-sm-3 col-sm-pull-9 ">
     <ul class="list-group list-group-prizes game-prizes">
       <% Game::PRIZES.reverse.each_with_index do |prize, index| %>
-        <li class="list-group-item text-center bg-white p-2 text-dark bg-opacity-50  <%= 'active' if (14 - index == @game.current_level) %>">
-          <%= 'diamond' if Game::FIREPROOF_LEVELS.include?(14-index) %>
+        <li class="list-group-item text-center bg-white p-2 text-dark bg-opacity-50  <%= "active" if (14 - index == @game.current_level) %>">
+          <%= "diamond" if Game::FIREPROOF_LEVELS.include?(14 - index) %>
           <%= prize %>
         </li>
       <% end %>
     </ul>
 
-    <%= link_to 'Забрать выигрыш', take_money_game_path(@game), data: { turbo_method: "put" }, class: 'btn btn-sm btn-info my-4 ' %>
+    <%= link_to "Take winning", take_money_game_path(@game), data: { turbo_method: "put" }, class: "btn btn-sm btn-info my-4 " %>
   </div>
 </div>

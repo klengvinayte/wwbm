@@ -2,37 +2,34 @@ require 'game_help_generator'
 
 class GameQuestion < ApplicationRecord
   belongs_to :game
-
-  # вопрос из которого берется вся информация
+  # the question from which all the information is taken
   belongs_to :question
 
-  # создаем в этой модели виртуальные геттеры text, level, значения которых
-  # автоматически берутся из связанной модели question
+  # we create virtual getters text, level in this model, the values of which are
+  # automatically taken from the related question model
   delegate :text, :level, to: :question, allow_nil: true
 
-  # без игры и вопроса - игровой вопрос не имеет смысла
   validates :game, :question, presence: true
 
-  # в полях a,b,c,d прячутся индексы ответов из объекта :game
+  # fields a,b,c,d hide the indexes of responses from the object :game
   validates :a, :b, :c, :d, inclusion: { in: 1..4 }
 
-  # Автоматическая сериализация поля в базу (мы юзаем как обычный хэш,
-  # а рельсы в базе хранят как строчку)
-  # см. ссылки в материалах урока
+  # Automatic serialization of the field into the database (we use it as a regular hash,
+  # and the rails in the database are stored as a string)
   serialize :help_hash, Hash
 
-  # help_hash у нас имеет такой формат:
+  # help_hash has this format:
   # {
-  #   fifty_fifty: ['a', 'b'], # При использовании подсказски остались варианты a и b
-  #   audience_help: {'a' => 42, 'c' => 37 ...}, # Распределение голосов по вариантам a, b, c, d
-  #   friend_call: 'Василий Петрович считает, что правильный ответ A'
+  #   fifty_fifty: ['a', 'b'], # When using the hint, options a and b remained
+  #   audience_help: {'a' => 42, 'c' => 37 ...}, # Distribution of votes by options a, b, c, d
+  #   friend_call: 'Harry Potter believes that the correct answer is A'
   # }
   #
 
-  # ----- Основные методы для доступа к данным в шаблонах и контроллерах -----------
+  # ----- Basic methods for accessing data in templates and controllers -----------
 
-  # Возвращает хэш, отсортированный по ключам:
-  # {'a' => 'Текст ответа Х', 'b' => 'Текст ответа У', ... }
+  # Returns a hash sorted by keys:
+  # {'a' => 'Answer text Х', 'b' => 'Answer text У', ... }
   def variants
     {
       'a' => question.read_attribute("answer#{a}"),
@@ -42,23 +39,23 @@ class GameQuestion < ApplicationRecord
     }
   end
 
-  # Возвращает истину, если переданная буква (строка или символ) содержит верный ответ
+  # Returns true if the passed letter (string or character) contains the correct answer
   def answer_correct?(letter)
     correct_answer_key == letter.to_s.downcase
   end
 
-  # ключ правильного ответа 'a', 'b', 'c', или 'd'
+  # the key to the correct answer 'a', 'b', 'c', или 'd'
   def correct_answer_key
     { a => 'a', b => 'b', c => 'c', d => 'd' }[1]
   end
 
-  # текст правильного ответа
+  # the text of the correct answer
   def correct_answer
     variants[correct_answer_key]
   end
 
-  # Добавляем в help_hash по ключю fifty_fifty - массив из двух вариантов: правильный и случайный
-  # и сохраняем объект
+  # Add an array of two options to help_hash using the fifty_fifty key: correct and random
+  # and save the object
   def add_fifty_fifty
     self.help_hash[:fifty_fifty] = [
       correct_answer_key,
@@ -67,17 +64,17 @@ class GameQuestion < ApplicationRecord
     save
   end
 
-  # Генерируем в help_hash случайное распределение по вариантам и сохраняем объект
+  # Generate a random distribution of options in help_hash and save the object
   def add_audience_help
-    # массив ключей
+    # array of keys
     keys_to_use = keys_to_use_in_help
     self.help_hash[:audience_help] = GameHelpGenerator.audience_distribution(keys_to_use, correct_answer_key)
     save
   end
 
-  # Добавляем в help_hash подсказку друга и сохраняем объект
+  # Adding a friend's hint to help_hash and saving the object
   def add_friend_call
-    # массив ключей
+    # array of keys
     keys_to_use = keys_to_use_in_help
     self.help_hash[:friend_call] = GameHelpGenerator.friend_call(keys_to_use, correct_answer_key)
     save
@@ -96,10 +93,10 @@ class GameQuestion < ApplicationRecord
 
   private
 
-  # Рассчитываем какие ключи нам доступны в подсказках
+  # We calculate which keys are available to us in the hints
   def keys_to_use_in_help
     keys_to_use = variants.keys
-    # Учитываем наличие подсказки 50/50
+    # We take into account the presence of a 50/50 hint
     keys_to_use = help_hash[:fifty_fifty] if help_hash.has_key?(:fifty_fifty)
     keys_to_use
   end
