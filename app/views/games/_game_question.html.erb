@@ -11,11 +11,11 @@
     <%# If the 50/50 hint was used, we need to check if there is an option among the remaining ones%>
     <% if !help.key?(:fifty_fifty) || help[:fifty_fifty].include?(letter) %>
       <div class="d-grid gap-2 col-6 mx-auto">
-        <%= link_to content_tag(:span, letter.upcase, class: 'variant') + ": #{variant}",
+        <%= link_to content_tag(:span, letter.upcase, class: "variant") + ": #{variant}",
                     answer_game_path(game, letter: letter),
                     data: { turbo_method: "put" },
                     remote: true,
-                    class: 'btn btn-outline-light my-3'
+                    class: "btn btn-outline-light my-3"
         %>
       </div>
     <% end %>

@@ -7,8 +7,8 @@
   <%= csp_meta_tag %>
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
   <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
-  <%= stylesheet_link_tag 'application', :media => 'all' %>
-  <%= javascript_include_tag 'application' %>
+  <%= stylesheet_link_tag "application", :media => "all" %>
+  <%= javascript_include_tag "application" %>
   <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
   <!--[if lt IE 9]>
   <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"
@@ -19,25 +19,25 @@
 <body>
 <div class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
   <div class="container">
-    <%= link_to 'Billionaire', root_path, class: 'navbar-brand' %>
+    <%= link_to "Billionaire", root_path, class: "navbar-brand" %>
     <% if user_signed_in? %>
       <div class="navbar-form navbar-right">
 
         <% if current_user.is_admin? %>
           <%# Link to the admin panel %>
-          <%= link_to 'Admin', rails_admin_path, class: 'btn navbar-btn btn-danger btn-xs' %>
-          <%= link_to 'Fill in new questions', new_questions_path, class: 'btn navbar-btn btn-warning btn-xs' %>
+          <%= link_to "Admin", rails_admin_path, class: "btn navbar-btn btn-danger btn-xs" %>
+          <%= link_to "Fill in new questions", new_questions_path, class: "btn navbar-btn btn-warning btn-xs" %>
         <% end %>
         <%= link_to content_tag(:span, "#{current_user.name} - #{number_to_currency current_user.balance}"),
                     user_path(current_user),
-                    class: 'btn btn-outline-light btn-sm me-2' %>
-        <%= link_to 'New game', games_path, data: { turbo_method: "post" }, class: 'btn btn-success btn-sm me-2' %>
-        <%= link_to 'Log out', destroy_user_session_path, data: { turbo_method: "delete" }, class: 'btn btn-info btn-sm' %>
+                    class: "btn btn-outline-light btn-sm me-2" %>
+        <%= link_to "New game", games_path, data: { turbo_method: "post" }, class: "btn btn-success btn-sm me-2" %>
+        <%= link_to "Log out", destroy_user_session_path, data: { turbo_method: "delete" }, class: "btn btn-info btn-sm" %>
       </div>
     <% else %>
       <div class="navbar-form navbar-right">
-        <%= link_to 'Log in', new_user_session_path, class: 'btn btn-info btn-sm me-2' %>
-        <%= link_to 'Sign up', new_user_registration_path, class: 'btn  btn-success btn-sm' %>
+        <%= link_to "Log in", new_user_session_path, class: "btn btn-info btn-sm me-2" %>
+        <%= link_to "Sign up", new_user_registration_path, class: "btn  btn-success btn-sm" %>
       </div>
     <% end %>
   </div>
@@ -49,7 +49,7 @@
     </div>
   </div>
   <footer class="buffer-top-lg text-right">
-    <p class="text-light">&copy; <%= link_to 'Kristina Lengvinayte', 'https://github.com/klengvinayte' %> 2022 </p>
+    <p class="text-light">&copy; <%= link_to "Kristina Lengvinayte", "https://github.com/klengvinayte" %> 2022 </p>
   </footer>
 </div>
 </body>

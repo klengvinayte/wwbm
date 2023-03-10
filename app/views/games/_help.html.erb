@@ -12,7 +12,7 @@
         <% end %>
         <% if help.key?(:audience_help) %>
           <p>Зрители считают: </p>
-          <%# We output the distribution of viewers' votes %>
+          <%# We output the distribution of viewers" votes %>
           <% help[:audience_help].sort.map do |key, value| %>
             <div class="progress">
               <div class="progress-bar progress-bar-danger" style="width: <%= value %>%;">

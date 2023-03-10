@@ -1,13 +1,13 @@
-require 'rails_helper'
-require 'support/my_spec_helper'
+require "rails_helper"
+require "support/my_spec_helper"
 
 RSpec.describe Game, type: :model do
   let(:user) { create(:user) }
 
   let(:game_w_questions) { create(:game_with_questions, user: user) }
 
-  context 'Game Factory' do
-    it 'Game.create_game! new correct game' do
+  context "Game Factory" do
+    it "Game.create_game! new correct game" do
       generate_questions(60)
 
       game = nil

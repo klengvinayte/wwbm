@@ -1,7 +1,7 @@
-require 'rails_helper'
+require "rails_helper"
 
-RSpec.describe 'users/show', type: :view do
-  let(:user) { create(:user, name: 'Kris') }
+RSpec.describe "users/show", type: :view do
+  let(:user) { create(:user, name: "Kris") }
 
   context "user views own profile" do
     before do
@@ -12,23 +12,23 @@ RSpec.describe 'users/show', type: :view do
       render
     end
 
-    it 'renders player names' do
-      expect(rendered).to match 'Kris'
+    it "renders player names" do
+      expect(rendered).to match "Kris"
     end
 
     it "renders games" do
-      expect(rendered).to match 'game template'
+      expect(rendered).to match "game template"
     end
 
     it "renders password changing link" do
-      expect(rendered).to match(link_to 'Change your username and password', edit_user_registration_path(user))
+      expect(rendered).to match(link_to "Change your username and password", edit_user_registration_path(user))
     end
   end
 
   context "user views not own profile" do
-    it 'does not render password changing link' do
+    it "does not render password changing link" do
       assign(:user, user)
-      expect(rendered).not_to match(link_to 'Change your username and password', edit_user_registration_path(user))
+      expect(rendered).not_to match(link_to "Change your username and password", edit_user_registration_path(user))
     end
   end
 end

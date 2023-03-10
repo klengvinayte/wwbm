@@ -1,4 +1,4 @@
-require 'game_help_generator'
+require "game_help_generator"
 
 class GameQuestion < ApplicationRecord
   belongs_to :game
@@ -29,13 +29,13 @@ class GameQuestion < ApplicationRecord
   # ----- Basic methods for accessing data in templates and controllers -----------
 
   # Returns a hash sorted by keys:
-  # {'a' => 'Answer text Х', 'b' => 'Answer text У', ... }
+  # {"a" => "Answer text Х", "b" => "Answer text У", ... }
   def variants
     {
-      'a' => question.read_attribute("answer#{a}"),
-      'b' => question.read_attribute("answer#{b}"),
-      'c' => question.read_attribute("answer#{c}"),
-      'd' => question.read_attribute("answer#{d}")
+      "a" => question.read_attribute("answer#{a}"),
+      "b" => question.read_attribute("answer#{b}"),
+      "c" => question.read_attribute("answer#{c}"),
+      "d" => question.read_attribute("answer#{d}")
     }
   end
 
@@ -44,9 +44,9 @@ class GameQuestion < ApplicationRecord
     correct_answer_key == letter.to_s.downcase
   end
 
-  # the key to the correct answer 'a', 'b', 'c', или 'd'
+  # the key to the correct answer "a", "b", "c", или "d"
   def correct_answer_key
-    { a => 'a', b => 'b', c => 'c', d => 'd' }[1]
+    { a => "a", b => "b", c => "c", d => "d" }[1]
   end
 
   # the text of the correct answer
@@ -72,7 +72,7 @@ class GameQuestion < ApplicationRecord
     save
   end
 
-  # Adding a friend's hint to help_hash and saving the object
+  # Adding a friend"s hint to help_hash and saving the object
   def add_friend_call
     # array of keys
     keys_to_use = keys_to_use_in_help

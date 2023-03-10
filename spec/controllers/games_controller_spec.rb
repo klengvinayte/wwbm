@@ -1,6 +1,6 @@
-require 'rails_helper'
+require "rails_helper"
 # Сразу подключим наш модуль с вспомогательными методами
-require 'support/my_spec_helper'
+require "support/my_spec_helper"
 
 RSpec.describe GamesController, type: :controller do
   # обычный пользователь
@@ -350,7 +350,7 @@ RSpec.describe GamesController, type: :controller do
         put :help, params: { id: game_w_questions.id, help_type: :audience_help }
         game = assigns(:game)
 
-        expect(game.current_game_question.help_hash[:audience_help].keys).to contain_exactly('a', 'b', 'c', 'd')
+        expect(game.current_game_question.help_hash[:audience_help].keys).to contain_exactly("a", "b", "c", "d")
       end
 
       it "redirects to current game page" do
@@ -399,7 +399,7 @@ RSpec.describe GamesController, type: :controller do
         put :help, params: { id: game_w_questions.id, help_type: :fifty_fifty }
         game = assigns(:game)
 
-        expect(game.current_game_question.help_hash[:fifty_fifty]).to include(  'd')
+        expect(game.current_game_question.help_hash[:fifty_fifty]).to include(  "d")
       end
 
       it "redirects to current game page" do

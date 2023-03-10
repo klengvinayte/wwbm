@@ -18,13 +18,13 @@
   <div class="col-sm-3 col-sm-pull-9 ">
     <ul class="list-group list-group-prizes game-prizes">
       <% Game::PRIZES.reverse.each_with_index do |prize, index| %>
-        <li class="list-group-item text-center bg-white p-2 text-dark bg-opacity-50  <%= "active" if (14 - index == @game.current_level) %>">
+        <li class="list-group-item text-center bg-white p-2 text-dark bg-opacity-50 <%= "active" if (14 - index == @game.current_level) %>">
           <%= "diamond" if Game::FIREPROOF_LEVELS.include?(14 - index) %>
           <%= prize %>
         </li>
       <% end %>
     </ul>
 
-    <%= link_to "Take winning", take_money_game_path(@game), data: { turbo_method: "put" }, class: "btn btn-sm btn-info my-4 " %>
+    <%= link_to "Take money", take_money_game_path(@game), data: { turbo_method: "put" }, class: "btn btn-sm btn-info my-4 " %>
   </div>
 </div>
